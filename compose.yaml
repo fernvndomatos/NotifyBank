@@ -1,0 +1,40 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: notifybank-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: notifybank
+      POSTGRES_USER: notifybank
+      POSTGRES_PASSWORD: notifybank123
+    ports:
+      - "5432:5432"
+    volumes:
+      - notifybank-pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U notifybank -d notifybank"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: notifybank-rabbitmq
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: notifybank
+      RABBITMQ_DEFAULT_PASS: notifybank123
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - notifybank-rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  notifybank-pg-data:
+  notifybank-rabbitmq-data:
