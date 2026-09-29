@@ -1,9 +1,12 @@
 package com.github.fernvndomatos.NotifyBank.service;
 
+import com.github.fernvndomatos.NotifyBank.dto.response.TransactionResponse;
 import com.github.fernvndomatos.NotifyBank.entity.BankAccount;
 import com.github.fernvndomatos.NotifyBank.entity.Transaction;
 import com.github.fernvndomatos.NotifyBank.exception.BankAccountNotFoundException;
 import com.github.fernvndomatos.NotifyBank.exception.TransactionNotFoundException;
+import com.github.fernvndomatos.NotifyBank.mapper.TransactionMapper;
+import com.github.fernvndomatos.NotifyBank.messaging.TransactionProducer;
 import com.github.fernvndomatos.NotifyBank.repository.BankAccountRepository;
 import com.github.fernvndomatos.NotifyBank.repository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +20,19 @@ public class TransactionService {
 
     private final TransactionRepository transactionRepository;
     private final BankAccountRepository bankAccountRepository;
+    private final TransactionProducer transactionProducer;
 
     public Transaction createTransaction(Long accountId, Transaction transaction) {
         BankAccount account = bankAccountRepository.findById(accountId)
                 .orElseThrow(() -> new BankAccountNotFoundException("Conta não encontrada: " + accountId));
         transaction.setAccount(account);
-        return transactionRepository.save(transaction);
+        Transaction savedTransaction = transactionRepository.save(transaction);
+
+        TransactionResponse response = TransactionMapper.toTransactionResponse(savedTransaction);
+
+        transactionProducer.publishTransactionCreated(response);
+
+        return savedTransaction;
     }
 
     public Transaction findByTransactionId(Long id) {
