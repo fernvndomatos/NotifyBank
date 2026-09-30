@@ -18,14 +18,14 @@ public class BankAccountService {
     public BankAccount createBankAccount(BankAccount bankAccount) {
         if (bankAccountRepository.findByAccountNumber(bankAccount.getAccountNumber()).isPresent()) {
             throw new AccountAlreadyExistsException(
-                    "Conta já cadastrada!"
+                    "Account already registered!"
             );
         }
         return bankAccountRepository.save(bankAccount);
     }
 
     public BankAccount findBankAccountById(Long id) {
-        return bankAccountRepository.findById(id).orElseThrow(() -> new BankAccountNotFoundException("Conta não encontrada: " + id));
+        return bankAccountRepository.findById(id).orElseThrow(() -> new BankAccountNotFoundException("Account not found: " + id));
     }
 
     public List<BankAccount> bankAccountList() {
@@ -33,7 +33,7 @@ public class BankAccountService {
     }
 
     public BankAccount updateBankAccount(Long id, BankAccount updatedBankAccount) {
-        BankAccount bankAccount = bankAccountRepository.findById(id).orElseThrow(() -> new BankAccountNotFoundException("Conta não encontrada: " + id));
+        BankAccount bankAccount = bankAccountRepository.findById(id).orElseThrow(() -> new BankAccountNotFoundException("Account not found: " + id));
 
         bankAccount.setAccountBalance(updatedBankAccount.getAccountBalance());
         bankAccount.setCurrencyType(updatedBankAccount.getCurrencyType());
@@ -45,7 +45,7 @@ public class BankAccountService {
 
     public void deleteBankAccountById(Long id) {
         if (!bankAccountRepository.existsById(id)) {
-            throw new BankAccountNotFoundException("Conta não encontrada: " + id);
+            throw new BankAccountNotFoundException("Account not found: " + id);
         }
         bankAccountRepository.deleteById(id);
     }

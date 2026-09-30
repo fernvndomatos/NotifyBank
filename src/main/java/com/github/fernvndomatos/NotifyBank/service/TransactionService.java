@@ -24,7 +24,7 @@ public class TransactionService {
 
     public Transaction createTransaction(Long accountId, Transaction transaction) {
         BankAccount account = bankAccountRepository.findById(accountId)
-                .orElseThrow(() -> new BankAccountNotFoundException("Conta não encontrada: " + accountId));
+                .orElseThrow(() -> new BankAccountNotFoundException("Account not found: " + accountId));
         transaction.setAccount(account);
         Transaction savedTransaction = transactionRepository.save(transaction);
 
@@ -36,7 +36,7 @@ public class TransactionService {
     }
 
     public Transaction findByTransactionId(Long id) {
-        return transactionRepository.findById(id).orElseThrow(() -> new TransactionNotFoundException("Transação não encontrada: " + id));
+        return transactionRepository.findById(id).orElseThrow(() -> new TransactionNotFoundException("Transaction not found: " + id));
     }
 
     public List<Transaction> transactionList() {
@@ -45,14 +45,14 @@ public class TransactionService {
 
     public List<Transaction> findTransactionByAccountId(Long accountId) {
         if (!bankAccountRepository.existsById(accountId)) {
-            throw new BankAccountNotFoundException("Conta não encontrada: " + accountId);
+            throw new BankAccountNotFoundException("Account not found: " + accountId);
         }
         return transactionRepository.findByAccountId(accountId);
     }
 
     public void deleteTransactionById(Long id) {
         if (!transactionRepository.existsById(id)) {
-            throw new TransactionNotFoundException("Transação não encontrada: " + id);
+            throw new TransactionNotFoundException("Transaction not found: " + id);
         }
         transactionRepository.deleteById(id);
     }

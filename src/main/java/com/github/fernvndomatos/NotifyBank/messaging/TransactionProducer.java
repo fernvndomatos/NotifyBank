@@ -2,7 +2,6 @@ package com.github.fernvndomatos.NotifyBank.messaging;
 
 import com.github.fernvndomatos.NotifyBank.config.RabbitMQConfig;
 import com.github.fernvndomatos.NotifyBank.dto.response.TransactionResponse;
-import com.github.fernvndomatos.NotifyBank.entity.Transaction;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -21,6 +20,6 @@ public class TransactionProducer {
                 RabbitMQConfig.TRANSACTION_CREATED_ROUTING_KEY,
                 transaction
         );
-        log.info("transação criada");
+        log.info("transaction created");
     }
 }
